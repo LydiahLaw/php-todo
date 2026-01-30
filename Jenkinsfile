@@ -2,27 +2,35 @@ pipeline {
     agent any
 
     stages {
-        stage("Initial cleanup") {
+
+        stage('Initial cleanup') {
             steps {
-                dir("${WORKSPACE}") {
-                    deleteDir()
-                }
+                deleteDir()
             }
         }
 
         stage('Checkout SCM') {
             steps {
-                git branch: 'main', url: 'https://github.com/LydiahLaw/php-todo.git'
+                git(
+                    branch: 'main',
+                    url: 'https://github.com/LydiahLaw/php-todo.git',
+                    credentialsId: 'php-todo-github'
+                )
             }
         }
 
-        stage('Prepare Dependencies') {
+        stage('Prepare Environment') {
             steps {
-                sh 'mv .env.sample .env'
-                sh 'composer install'
-                sh 'php artisan migrate'
-                sh 'php artisan db:seed'
+                sh 'cp .env.sample .env'
+                sh 'composer install --no-interaction --prefer-dist'
                 sh 'php artisan key:generate'
+            }
+        }
+
+        stage('Database Setup') {
+            steps {
+                sh 'php artisan migrate --force'
+                sh 'php artisan db:seed --force'
             }
         }
 
