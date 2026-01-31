@@ -21,7 +21,6 @@ pipeline {
 
         stage('Prepare Environment') {
             steps {
-                sh 'cp .env.sample .env'
                 sh 'composer update --no-interaction --no-audit --ignore-platform-reqs'
                 sh 'php artisan key:generate || true'
             }
@@ -29,8 +28,8 @@ pipeline {
 
         stage('Database Setup') {
             steps {
-                sh 'php artisan migrate --force || true'
-                sh 'php artisan db:seed --force || true'
+                sh 'php artisan migrate --force'
+                sh 'php artisan db:seed --force'
             }
         }
 
