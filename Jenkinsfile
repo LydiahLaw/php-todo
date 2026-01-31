@@ -24,6 +24,8 @@ pipeline {
                 sh 'cp .env.sample .env'
                 sh 'composer install --no-interaction --prefer-dist'
                 sh 'php artisan key:generate'
+                sh 'php artisan config:clear'
+                sh 'php artisan cache:clear'
             }
         }
 
