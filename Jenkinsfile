@@ -43,7 +43,7 @@ pipeline {
         stage('Database Setup') {
             steps {
                 // Run migrations and seed the database
-                sh 'php artisan migrate --force'
+                sh 'php artisan migrate:fresh --force'
                 sh 'php artisan db:seed --force'
             }
         }
