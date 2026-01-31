@@ -22,7 +22,7 @@ pipeline {
         stage('Prepare Environment') {
             steps {
                 sh 'cp .env.sample .env'
-                sh 'composer install --no-interaction --prefer-dist'
+                sh 'composer install --no-interaction --prefer-dist --ignore-platform-reqs || composer update --no-interaction --prefer-dist --ignore-platform-reqs'
                 sh 'php artisan key:generate'
                 sh 'php artisan config:clear'
                 sh 'php artisan cache:clear'
