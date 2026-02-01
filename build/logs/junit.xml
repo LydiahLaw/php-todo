@@ -1,51 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="" tests="3" assertions="0" errors="3" warnings="0" failures="0" skipped="0" time="0.400552">
-    <testsuite name="Application Test Suite" tests="3" assertions="0" errors="3" warnings="0" failures="0" skipped="0" time="0.400552">
-      <testsuite name="Tests\Feature\ExampleTest" file="C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php" tests="3" assertions="0" errors="3" warnings="0" failures="0" skipped="0" time="0.400552">
-        <testcase name="test_tasks_are_displayed_on_the_dashboard" class="Tests\Feature\ExampleTest" classname="Tests.Feature.ExampleTest" file="C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php" line="13" assertions="0" time="0.362555">
-          <error type="PDOException">Tests\Feature\ExampleTest::test_tasks_are_displayed_on_the_dashboard
-PDOException: could not find driver
+  <testsuite name="" tests="3" assertions="0" errors="3" warnings="0" failures="0" skipped="0" time="0.575924">
+    <testsuite name="Application Test Suite" tests="3" assertions="0" errors="3" warnings="0" failures="0" skipped="0" time="0.575924">
+      <testsuite name="Tests\Feature\ExampleTest" file="C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php" tests="3" assertions="0" errors="3" warnings="0" failures="0" skipped="0" time="0.575924">
+        <testcase name="test_application_homepage_works" class="Tests\Feature\ExampleTest" classname="Tests.Feature.ExampleTest" file="C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php" line="23" assertions="0" time="0.516726">
+          <error type="Illuminate\Database\QueryException">Tests\Feature\ExampleTest::test_application_homepage_works
+Illuminate\Database\QueryException: could not find driver (SQL: select * from sqlite_master where type = 'table' and name = migrations)
 
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:70
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:45
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\MySqlConnector.php:24
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\ConnectionFactory.php:184
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:1064
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php:139
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php:115
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\DatabaseTransactions.php:21
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestCase.php:130
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:712
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:672
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:359
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:346
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Schema\Builder.php:134
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Migrations\DatabaseMigrationRepository.php:169
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Migrations\Migrator.php:673
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\MigrateCommand.php:110
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\MigrateCommand.php:78
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Migrations\Migrator.php:606
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\MigrateCommand.php:77
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:36
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Util.php:40
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:93
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:35
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Container.php:653
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:136
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Command\Command.php:298
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:120
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Concerns\CallsCommands.php:67
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Concerns\CallsCommands.php:28
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\FreshCommand.php:49
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:36
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Util.php:40
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:93
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:35
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Container.php:653
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:136
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Command\Command.php:298
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:120
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Application.php:1040
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Application.php:301
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Application.php:171
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Application.php:94
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Application.php:185
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Console\Kernel.php:263
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Testing\PendingCommand.php:260
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Testing\PendingCommand.php:413
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\InteractsWithConsole.php:66
+C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php:17
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestCase.php:122
 C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestCase.php:91</error>
         </testcase>
-        <testcase name="test_tasks_can_be_created" class="Tests\Feature\ExampleTest" classname="Tests.Feature.ExampleTest" file="C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php" line="25" assertions="0" time="0.014361">
-          <error type="PDOException">Tests\Feature\ExampleTest::test_tasks_can_be_created
-PDOException: could not find driver
+        <testcase name="test_database_connection" class="Tests\Feature\ExampleTest" classname="Tests.Feature.ExampleTest" file="C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php" line="29" assertions="0" time="0.028039">
+          <error type="Illuminate\Database\QueryException">Tests\Feature\ExampleTest::test_database_connection
+Illuminate\Database\QueryException: could not find driver (SQL: select * from sqlite_master where type = 'table' and name = migrations)
 
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:70
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:45
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\MySqlConnector.php:24
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\ConnectionFactory.php:184
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:1064
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php:139
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php:115
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\DatabaseTransactions.php:21
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestCase.php:130
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:712
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:672
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:359
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:346
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Schema\Builder.php:134
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Migrations\DatabaseMigrationRepository.php:169
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Migrations\Migrator.php:673
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\MigrateCommand.php:110
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\MigrateCommand.php:78
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Migrations\Migrator.php:606
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\MigrateCommand.php:77
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:36
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Util.php:40
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:93
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:35
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Container.php:653
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:136
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Command\Command.php:298
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:120
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Concerns\CallsCommands.php:67
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Concerns\CallsCommands.php:28
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\FreshCommand.php:49
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:36
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Util.php:40
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:93
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:35
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Container.php:653
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:136
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Command\Command.php:298
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:120
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Application.php:1040
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Application.php:301
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Application.php:171
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Application.php:94
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Application.php:185
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Console\Kernel.php:263
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Testing\PendingCommand.php:260
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Testing\PendingCommand.php:413
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\InteractsWithConsole.php:66
+C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php:17
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestCase.php:122
 C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestCase.php:91</error>
         </testcase>
-        <testcase name="test_long_tasks_cant_be_created" class="Tests\Feature\ExampleTest" classname="Tests.Feature.ExampleTest" file="C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php" line="33" assertions="0" time="0.023636">
-          <error type="PDOException">Tests\Feature\ExampleTest::test_long_tasks_cant_be_created
-PDOException: could not find driver
+        <testcase name="test_environment_is_testing" class="Tests\Feature\ExampleTest" classname="Tests.Feature.ExampleTest" file="C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php" line="34" assertions="0" time="0.031158">
+          <error type="Illuminate\Database\QueryException">Tests\Feature\ExampleTest::test_environment_is_testing
+Illuminate\Database\QueryException: could not find driver (SQL: select * from sqlite_master where type = 'table' and name = migrations)
 
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:70
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:45
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\MySqlConnector.php:24
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connectors\ConnectionFactory.php:184
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:1064
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php:139
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php:115
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\DatabaseTransactions.php:21
-C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestCase.php:130
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:712
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:672
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:359
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Connection.php:346
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Schema\Builder.php:134
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Migrations\DatabaseMigrationRepository.php:169
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Migrations\Migrator.php:673
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\MigrateCommand.php:110
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\MigrateCommand.php:78
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Migrations\Migrator.php:606
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\MigrateCommand.php:77
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:36
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Util.php:40
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:93
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:35
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Container.php:653
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:136
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Command\Command.php:298
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:120
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Concerns\CallsCommands.php:67
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Concerns\CallsCommands.php:28
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\FreshCommand.php:49
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:36
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Util.php:40
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:93
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:35
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Container\Container.php:653
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:136
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Command\Command.php:298
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Command.php:120
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Application.php:1040
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Application.php:301
+C:\Users\USER\STEGHUB\php-todo\vendor\symfony\console\Application.php:171
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Application.php:94
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Console\Application.php:185
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Console\Kernel.php:263
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Testing\PendingCommand.php:260
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Testing\PendingCommand.php:413
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\InteractsWithConsole.php:66
+C:\Users\USER\STEGHUB\php-todo\tests\ExampleTest.php:17
+C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestCase.php:122
 C:\Users\USER\STEGHUB\php-todo\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestCase.php:91</error>
         </testcase>
       </testsuite>
