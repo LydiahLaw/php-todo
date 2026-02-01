@@ -20,8 +20,7 @@ pipeline {
             steps {
                 sh 'cp .env.sample .env || cp .env.example .env'
                 sh 'composer install'
-                sh 'php artisan migrate'
-                sh 'php artisan db:seed'
+                sh 'php artisan migrate:fresh --seed'
                 sh 'php artisan key:generate'
             }
         }
