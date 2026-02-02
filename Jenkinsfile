@@ -19,7 +19,8 @@ pipeline {
             steps {
                 sh '''
                 cp .env.sample .env
-
+                php artisan key:generate
+                
                 sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
                 sed -i 's/DB_DATABASE=.*/DB_DATABASE=database\\/database.sqlite/' .env
                 sed -i 's/DB_HOST=.*/DB_HOST=/' .env
