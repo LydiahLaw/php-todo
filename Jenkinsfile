@@ -65,14 +65,15 @@ pipeline {
             steps {
                 sh '''
                 mkdir -p build/logs
-                # Run PHPLoc and create full CSV
+
+                # Run PHPLoc CSV
                 ./vendor/bin/phploc app/ --log-csv build/logs/phploc_full.csv
 
-                # Extract each metric into its own CSV for Jenkins Plot
-                grep "Lines of Code" build/logs/phploc_full.csv | awk -F, '{print $2}' > build/logs/lines_of_code.csv
-                grep "Classes" build/logs/phploc_full.csv | awk -F, '{print $2}' > build/logs/classes.csv
-                grep "Methods" build/logs/phploc_full.csv | awk -F, '{print $2}' > build/logs/methods.csv
-                grep "Cyclomatic Complexity" build/logs/phploc_full.csv | awk -F, '{print $2}' > build/logs/cyclomatic_complexity.csv
+                # Extract correct column (2nd column) for Jenkins plots
+                awk -F, '/^Directories,Files,Namespaces,Classes,Abstract Classes,Concrete Classes,Methods,Cyclomatic Complexity/{next} {print $2}' build/logs/phploc_full.csv > build/logs/lines_of_code.csv
+                awk -F, '/^Classes,Abstract Classes,Concrete Classes/{next} {print $2}' build/logs/phploc_full.csv > build/logs/classes.csv
+                awk -F, '/^Methods,Non-Static Methods,Static Methods,Public Methods,Non-Public Methods/{next} {print $2}' build/logs/phploc_full.csv > build/logs/methods.csv
+                awk -F, '/^Cyclomatic Complexity/{next} {print $2}' build/logs/phploc_full.csv > build/logs/cyclomatic_complexity.csv
                 '''
             }
         }
