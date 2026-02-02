@@ -19,12 +19,9 @@ pipeline {
             steps {
                 sh '''
                 cp .env.sample .env
-
                 composer install --no-interaction --prefer-dist
-
                 mkdir -p storage bootstrap/cache
                 chmod -R 775 storage bootstrap/cache
-
                 php artisan key:generate
                 php artisan config:clear
                 php artisan cache:clear || true
@@ -57,7 +54,24 @@ pipeline {
 
         stage('Plot Code Coverage Report') {
             steps {
-                // Your existing phploc plotting steps here
+
+                plot csvFileName: 'phploc.csv',
+                     csvSeries: [[file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING']],
+                     group: 'phploc',
+                     title: 'Lines of Code',
+                     yaxis: 'LOC'
+
+                plot csvFileName: 'phploc.csv',
+                     csvSeries: [[file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING']],
+                     group: 'phploc',
+                     title: 'Structures',
+                     yaxis: 'Count'
+
+                plot csvFileName: 'phploc.csv',
+                     csvSeries: [[file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING']],
+                     group: 'phploc',
+                     title: 'Cyclomatic Complexity',
+                     yaxis: 'Complexity'
             }
         }
 
@@ -71,6 +85,5 @@ pipeline {
                 }
             }
         }
-
     }
 }
