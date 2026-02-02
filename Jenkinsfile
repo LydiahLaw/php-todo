@@ -30,12 +30,14 @@ pipeline {
 
                 composer install --no-interaction --prefer-dist
 
-                mkdir -p storage bootstrap/cache database
+                # Ensure PHPLoc is installed
+                composer require --dev phploc/phploc || true
+
+                mkdir -p storage bootstrap/cache database build/logs
                 touch database/database.sqlite
 
                 chmod -R 775 storage bootstrap/cache database
 
-                php artisan key:generate
                 php artisan config:clear
                 php artisan cache:clear || true
                 '''
@@ -61,32 +63,31 @@ pipeline {
 
         stage('Code Analysis') {
             steps {
-                sh 'phploc app/ --log-csv build/logs/phploc.csv'
+                sh '''
+                # Ensure logs directory exists
+                mkdir -p build/logs
+                # Generate PHPLoc CSV
+                ./vendor/bin/phploc app/ --log-csv build/logs/phploc.csv
+                '''
             }
         }
 
-        stage('Plot Code Coverage Report') {
+        stage('Plot Code Metrics') {
             steps {
-                plot csvFileName: 'phploc.csv',
-                     csvSeries: [
-                         [file: 'build/logs/phploc.csv', label: 'Lines of Code']
-                     ],
+                plot csvFileName: 'lines-of-code.csv',
+                     csvSeries: [[file: 'build/logs/phploc.csv', label: 'Lines of Code']],
                      group: 'PHP Metrics',
                      style: 'line',
                      title: 'PHP Lines of Code'
 
-                plot csvFileName: 'phploc.csv',
-                     csvSeries: [
-                         [file: 'build/logs/phploc.csv', label: 'Classes']
-                     ],
+                plot csvFileName: 'classes.csv',
+                     csvSeries: [[file: 'build/logs/phploc.csv', label: 'Classes']],
                      group: 'PHP Metrics',
                      style: 'line',
                      title: 'PHP Classes'
 
-                plot csvFileName: 'phploc.csv',
-                     csvSeries: [
-                         [file: 'build/logs/phploc.csv', label: 'Methods']
-                     ],
+                plot csvFileName: 'methods.csv',
+                     csvSeries: [[file: 'build/logs/phploc.csv', label: 'Methods']],
                      group: 'PHP Metrics',
                      style: 'line',
                      title: 'PHP Methods'
