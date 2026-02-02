@@ -54,24 +54,29 @@ pipeline {
 
         stage('Plot Code Coverage Report') {
             steps {
+                plot csvFileName: 'phploc.csv',
+                     csvSeries: [
+                         [file: 'build/logs/phploc.csv', label: 'Lines of Code']
+                     ],
+                     group: 'PHP Metrics',
+                     style: 'line',
+                     title: 'PHP Lines of Code'
 
                 plot csvFileName: 'phploc.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING']],
-                     group: 'phploc',
-                     title: 'Lines of Code',
-                     yaxis: 'LOC'
+                     csvSeries: [
+                         [file: 'build/logs/phploc.csv', label: 'Classes']
+                     ],
+                     group: 'PHP Metrics',
+                     style: 'line',
+                     title: 'PHP Classes'
 
                 plot csvFileName: 'phploc.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING']],
-                     group: 'phploc',
-                     title: 'Structures',
-                     yaxis: 'Count'
-
-                plot csvFileName: 'phploc.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING']],
-                     group: 'phploc',
-                     title: 'Cyclomatic Complexity',
-                     yaxis: 'Complexity'
+                     csvSeries: [
+                         [file: 'build/logs/phploc.csv', label: 'Methods']
+                     ],
+                     group: 'PHP Metrics',
+                     style: 'line',
+                     title: 'PHP Methods'
             }
         }
 
@@ -85,5 +90,6 @@ pipeline {
                 }
             }
         }
+
     }
 }
