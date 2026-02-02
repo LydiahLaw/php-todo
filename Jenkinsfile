@@ -64,47 +64,46 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 sh '''
-                # Ensure logs directory exists
                 mkdir -p build/logs
+                # Run PHPLoc and create full CSV
+                ./vendor/bin/phploc app/ --log-csv build/logs/phploc_full.csv
 
-                # Generate PHPLoc CSV
-                ./vendor/bin/phploc app/ --log-csv build/logs/phploc.csv
-
-                # Transform PHPLoc CSV into numeric CSV for Jenkins Plot
-                # We'll extract these metrics: Lines of Code, Classes, Methods, Cyclomatic Complexity
-                grep -E "Lines of Code|Classes|Methods|Cyclomatic Complexity" build/logs/phploc.csv \
-                    | awk -F, '{print $2}' > build/logs/phploc_plot.csv
+                # Extract each metric into its own CSV for Jenkins Plot
+                grep "Lines of Code" build/logs/phploc_full.csv | awk -F, '{print $2}' > build/logs/lines_of_code.csv
+                grep "Classes" build/logs/phploc_full.csv | awk -F, '{print $2}' > build/logs/classes.csv
+                grep "Methods" build/logs/phploc_full.csv | awk -F, '{print $2}' > build/logs/methods.csv
+                grep "Cyclomatic Complexity" build/logs/phploc_full.csv | awk -F, '{print $2}' > build/logs/cyclomatic_complexity.csv
                 '''
             }
         }
 
         stage('Plot Code Metrics') {
             steps {
-                archiveArtifacts artifacts: 'build/logs/phploc_plot.csv', fingerprint: true
+                archiveArtifacts artifacts: 'build/logs/*.csv', fingerprint: true
 
-                plot csvFileName: 'plot-loc.csv',
-                     csvSeries: [[file: 'build/logs/phploc_plot.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
+                plot csvFileName: 'lines_of_code.csv',
+                     csvSeries: [[file: 'build/logs/lines_of_code.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
                      group: 'PHP Metrics',
                      numBuilds: '100',
                      style: 'line',
                      title: 'Lines of Code'
 
-                plot csvFileName: 'plot-classes.csv',
-                     csvSeries: [[file: 'build/logs/phploc_plot.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
+                plot csvFileName: 'classes.csv',
+                     csvSeries: [[file: 'build/logs/classes.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
                      group: 'PHP Metrics',
                      numBuilds: '100',
                      style: 'line',
                      title: 'Classes'
 
-                plot csvFileName: 'plot-methods.csv',
-                     csvSeries: [[file: 'build/logs/phploc_plot.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
+                plot csvFileName: 'methods.csv',
+                     csvSeries: [[file: 'build/logs/methods.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
                      group: 'PHP Metrics',
                      numBuilds: '100',
                      style: 'line',
                      title: 'Methods'
 
-                plot csvFileName: 'plot-complexity.csv',
-                     csvSeries: [[file: 'build/logs/phploc_plot.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
+                plot csvFileName: 'cyclomatic_complexity.csv',
+                     csvSeries: [[file: 'build/logs/cyclomatic_complexity.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
                      group: 'PHP Metrics',
                      numBuilds: '100',
                      style: 'line',
