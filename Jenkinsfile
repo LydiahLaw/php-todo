@@ -19,9 +19,21 @@ pipeline {
             steps {
                 sh '''
                 cp .env.sample .env
+
+                sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
+                sed -i 's/DB_DATABASE=.*/DB_DATABASE=database\\/database.sqlite/' .env
+                sed -i 's/DB_HOST=.*/DB_HOST=/' .env
+                sed -i 's/DB_PORT=.*/DB_PORT=/' .env
+                sed -i 's/DB_USERNAME=.*/DB_USERNAME=/' .env
+                sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=/' .env
+
                 composer install --no-interaction --prefer-dist
-                mkdir -p storage bootstrap/cache
-                chmod -R 775 storage bootstrap/cache
+
+                mkdir -p storage bootstrap/cache database
+                touch database/database.sqlite
+
+                chmod -R 775 storage bootstrap/cache database
+
                 php artisan key:generate
                 php artisan config:clear
                 php artisan cache:clear || true
@@ -32,7 +44,7 @@ pipeline {
         stage('Database Setup') {
             steps {
                 sh '''
-                php artisan migrate:fresh --force
+                php artisan migrate --force
                 php artisan db:seed --force
                 '''
             }
@@ -90,6 +102,5 @@ pipeline {
                 }
             }
         }
-
     }
 }
