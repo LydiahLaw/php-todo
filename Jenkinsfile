@@ -64,61 +64,57 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 sh '''
+                # Ensure logs directory exists
                 mkdir -p build/logs
+
+                # Generate PHPLoc CSV
                 ./vendor/bin/phploc app/ --log-csv build/logs/phploc.csv
+
+                # Extract numeric values row for Jenkins Plot plugin
+                head -n 2 build/logs/phploc.csv | tail -n 1 > build/logs/phploc_numeric.csv
                 '''
             }
         }
 
         stage('Plot Code Metrics') {
             steps {
-                // Archive CSV for reference
-                archiveArtifacts artifacts: 'build/logs/phploc.csv', fingerprint: true
+                archiveArtifacts artifacts: 'build/logs/phploc_numeric.csv', fingerprint: true
 
                 // Lines of Code
                 plot csvFileName: 'plot-loc.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv']],
+                     csvSeries: [[file: 'build/logs/phploc_numeric.csv']],
                      group: 'phploc',
                      numBuilds: '100',
                      style: 'line',
                      title: 'A - Lines of code',
                      yaxis: 'Lines of Code'
 
-                // Structures / Containers
-                plot csvFileName: 'plot-structures.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv']],
-                     group: 'phploc',
-                     numBuilds: '100',
-                     style: 'line',
-                     title: 'B - Structures Containers',
-                     yaxis: 'Count'
-
                 // Classes
                 plot csvFileName: 'plot-classes.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv']],
+                     csvSeries: [[file: 'build/logs/phploc_numeric.csv']],
                      group: 'phploc',
                      numBuilds: '100',
                      style: 'line',
-                     title: 'E - Types of Classes',
+                     title: 'B - Classes',
                      yaxis: 'Count'
 
                 // Methods
                 plot csvFileName: 'plot-methods.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv']],
+                     csvSeries: [[file: 'build/logs/phploc_numeric.csv']],
                      group: 'phploc',
                      numBuilds: '100',
                      style: 'line',
-                     title: 'F - Types of Methods',
+                     title: 'C - Methods',
                      yaxis: 'Count'
 
-                // Cyclomatic Complexity
+                // Cyclomatic complexity
                 plot csvFileName: 'plot-complexity.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv']],
+                     csvSeries: [[file: 'build/logs/phploc_numeric.csv']],
                      group: 'phploc',
                      numBuilds: '100',
                      style: 'line',
                      title: 'D - Relative Cyclomatic Complexity',
-                     yaxis: 'Cyclomatic Complexity by Structure'
+                     yaxis: 'Cyclomatic Complexity'
             }
         }
 
