@@ -75,19 +75,19 @@ pipeline {
         stage('Plot Code Metrics') {
             steps {
                 plot csvFileName: 'lines-of-code.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv', label: 'Lines of Code']],
+                     csvSeries: [[file: 'build/logs/phploc.csv', series: 'Lines of Code']],
                      group: 'PHP Metrics',
                      style: 'line',
                      title: 'PHP Lines of Code'
 
                 plot csvFileName: 'classes.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv', label: 'Classes']],
+                     csvSeries: [[file: 'build/logs/phploc.csv', series: 'Classes']],
                      group: 'PHP Metrics',
                      style: 'line',
                      title: 'PHP Classes'
 
                 plot csvFileName: 'methods.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv', label: 'Methods']],
+                     csvSeries: [[file: 'build/logs/phploc.csv', series: 'Methods']],
                      group: 'PHP Metrics',
                      style: 'line',
                      title: 'PHP Methods'
