@@ -64,10 +64,13 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 sh '''
-                # Ensure logs directory exists
                 mkdir -p build/logs
-                # Generate PHPLoc CSV
                 ./vendor/bin/phploc app/ --log-csv build/logs/phploc.csv
+
+                # Split PHPLoc CSV into separate metric files for Jenkins plots
+                awk -F',' 'NR==1{next} {print "Metric,Value" > "build/logs/lines-of-code.csv"; print "Lines of Code,"$1 > "build/logs/lines-of-code.csv"}' build/logs/phploc.csv
+                awk -F',' 'NR==1{next} {print "Metric,Value" > "build/logs/classes.csv"; print "Classes,"$2 > "build/logs/classes.csv"}' build/logs/phploc.csv
+                awk -F',' 'NR==1{next} {print "Metric,Value" > "build/logs/methods.csv"; print "Methods,"$3 > "build/logs/methods.csv"}' build/logs/phploc.csv
                 '''
             }
         }
@@ -75,19 +78,19 @@ pipeline {
         stage('Plot Code Metrics') {
             steps {
                 plot csvFileName: 'lines-of-code.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv', series: 'Lines of Code']],
+                     csvSeries: [[file: 'build/logs/lines-of-code.csv']],
                      group: 'PHP Metrics',
                      style: 'line',
                      title: 'PHP Lines of Code'
 
                 plot csvFileName: 'classes.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv', series: 'Classes']],
+                     csvSeries: [[file: 'build/logs/classes.csv']],
                      group: 'PHP Metrics',
                      style: 'line',
                      title: 'PHP Classes'
 
                 plot csvFileName: 'methods.csv',
-                     csvSeries: [[file: 'build/logs/phploc.csv', series: 'Methods']],
+                     csvSeries: [[file: 'build/logs/methods.csv']],
                      group: 'PHP Metrics',
                      style: 'line',
                      title: 'PHP Methods'
