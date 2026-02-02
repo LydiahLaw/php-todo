@@ -64,36 +64,88 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 sh '''
+                # Ensure logs directory exists
                 mkdir -p build/logs
+                # Generate PHPLoc CSV
                 ./vendor/bin/phploc app/ --log-csv build/logs/phploc.csv
-
-                # Split PHPLoc CSV into separate metric files for Jenkins plots
-                awk -F',' 'NR==1{next} {print "Metric,Value" > "build/logs/lines-of-code.csv"; print "Lines of Code,"$1 > "build/logs/lines-of-code.csv"}' build/logs/phploc.csv
-                awk -F',' 'NR==1{next} {print "Metric,Value" > "build/logs/classes.csv"; print "Classes,"$2 > "build/logs/classes.csv"}' build/logs/phploc.csv
-                awk -F',' 'NR==1{next} {print "Metric,Value" > "build/logs/methods.csv"; print "Methods,"$3 > "build/logs/methods.csv"}' build/logs/phploc.csv
                 '''
             }
         }
 
         stage('Plot Code Metrics') {
             steps {
-                plot csvFileName: 'lines-of-code.csv',
-                     csvSeries: [[file: 'build/logs/lines-of-code.csv']],
-                     group: 'PHP Metrics',
+                // Archive the CSV for debugging
+                archiveArtifacts artifacts: 'build/logs/phploc.csv', fingerprint: true
+                
+                plot csvFileName: 'plot-loc.csv',
+                     csvSeries: [[
+                         displayTableFlag: false,
+                         exclusionValues: 'Lines of Code (LOC),Comment Lines of Code (CLOC),Non-Comment Lines of Code (NCLOC),Logical Lines of Code (LLOC)',
+                         file: 'build/logs/phploc.csv',
+                         inclusionFlag: 'INCLUDE_BY_STRING',
+                         url: ''
+                     ]],
+                     group: 'phploc',
+                     numBuilds: '100',
                      style: 'line',
-                     title: 'PHP Lines of Code'
+                     title: 'A - Lines of code',
+                     yaxis: 'Lines of Code'
 
-                plot csvFileName: 'classes.csv',
-                     csvSeries: [[file: 'build/logs/classes.csv']],
-                     group: 'PHP Metrics',
+                plot csvFileName: 'plot-structures.csv',
+                     csvSeries: [[
+                         displayTableFlag: false,
+                         exclusionValues: 'Directories,Files,Namespaces',
+                         file: 'build/logs/phploc.csv',
+                         inclusionFlag: 'INCLUDE_BY_STRING',
+                         url: ''
+                     ]],
+                     group: 'phploc',
+                     numBuilds: '100',
                      style: 'line',
-                     title: 'PHP Classes'
+                     title: 'B - Structures Containers',
+                     yaxis: 'Count'
 
-                plot csvFileName: 'methods.csv',
-                     csvSeries: [[file: 'build/logs/methods.csv']],
-                     group: 'PHP Metrics',
+                plot csvFileName: 'plot-classes.csv',
+                     csvSeries: [[
+                         displayTableFlag: false,
+                         exclusionValues: 'Classes,Abstract Classes,Concrete Classes',
+                         file: 'build/logs/phploc.csv',
+                         inclusionFlag: 'INCLUDE_BY_STRING',
+                         url: ''
+                     ]],
+                     group: 'phploc',
+                     numBuilds: '100',
                      style: 'line',
-                     title: 'PHP Methods'
+                     title: 'E - Types of Classes',
+                     yaxis: 'Count'
+
+                plot csvFileName: 'plot-methods.csv',
+                     csvSeries: [[
+                         displayTableFlag: false,
+                         exclusionValues: 'Methods,Non-Static Methods,Static Methods,Public Methods,Non-Public Methods',
+                         file: 'build/logs/phploc.csv',
+                         inclusionFlag: 'INCLUDE_BY_STRING',
+                         url: ''
+                     ]],
+                     group: 'phploc',
+                     numBuilds: '100',
+                     style: 'line',
+                     title: 'F - Types of Methods',
+                     yaxis: 'Count'
+
+                plot csvFileName: 'plot-complexity.csv',
+                     csvSeries: [[
+                         displayTableFlag: false,
+                         exclusionValues: 'Cyclomatic Complexity / Lines of Code,Cyclomatic Complexity / Number of Methods',
+                         file: 'build/logs/phploc.csv',
+                         inclusionFlag: 'INCLUDE_BY_STRING',
+                         url: ''
+                     ]],
+                     group: 'phploc',
+                     numBuilds: '100',
+                     style: 'line',
+                     title: 'D - Relative Cyclomatic Complexity',
+                     yaxis: 'Cyclomatic Complexity by Structure'
             }
         }
 
