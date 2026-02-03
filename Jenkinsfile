@@ -20,7 +20,7 @@ pipeline {
                 sh '''
                 cp .env.sample .env
                 php artisan key:generate
-
+                
                 sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
                 sed -i 's/DB_DATABASE=.*/DB_DATABASE=database\\/database.sqlite/' .env
                 sed -i 's/DB_HOST=.*/DB_HOST=/' .env
@@ -64,51 +64,88 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 sh '''
+                # Ensure logs directory exists
                 mkdir -p build/logs
-
-                # Run PHPLoc CSV
-                ./vendor/bin/phploc app/ --log-csv build/logs/phploc_full.csv
-
-                # Extract correct column (2nd column) for Jenkins plots
-                awk -F, '/^Directories,Files,Namespaces,Classes,Abstract Classes,Concrete Classes,Methods,Cyclomatic Complexity/{next} {print $2}' build/logs/phploc_full.csv > build/logs/lines_of_code.csv
-                awk -F, '/^Classes,Abstract Classes,Concrete Classes/{next} {print $2}' build/logs/phploc_full.csv > build/logs/classes.csv
-                awk -F, '/^Methods,Non-Static Methods,Static Methods,Public Methods,Non-Public Methods/{next} {print $2}' build/logs/phploc_full.csv > build/logs/methods.csv
-                awk -F, '/^Cyclomatic Complexity/{next} {print $2}' build/logs/phploc_full.csv > build/logs/cyclomatic_complexity.csv
+                # Generate PHPLoc CSV
+                ./vendor/bin/phploc app/ --log-csv build/logs/phploc.csv
                 '''
             }
         }
 
         stage('Plot Code Metrics') {
             steps {
-                archiveArtifacts artifacts: 'build/logs/*.csv', fingerprint: true
-
-                plot csvFileName: 'lines_of_code.csv',
-                     csvSeries: [[file: 'build/logs/lines_of_code.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
-                     group: 'PHP Metrics',
+                // Archive the CSV for debugging
+                archiveArtifacts artifacts: 'build/logs/phploc.csv', fingerprint: true
+                
+                plot csvFileName: 'plot-loc.csv',
+                     csvSeries: [[
+                         displayTableFlag: false,
+                         exclusionValues: 'Lines of Code (LOC),Comment Lines of Code (CLOC),Non-Comment Lines of Code (NCLOC),Logical Lines of Code (LLOC)',
+                         file: 'build/logs/phploc.csv',
+                         inclusionFlag: 'INCLUDE_BY_STRING',
+                         url: ''
+                     ]],
+                     group: 'phploc',
                      numBuilds: '100',
                      style: 'line',
-                     title: 'Lines of Code'
+                     title: 'A - Lines of code',
+                     yaxis: 'Lines of Code'
 
-                plot csvFileName: 'classes.csv',
-                     csvSeries: [[file: 'build/logs/classes.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
-                     group: 'PHP Metrics',
+                plot csvFileName: 'plot-structures.csv',
+                     csvSeries: [[
+                         displayTableFlag: false,
+                         exclusionValues: 'Directories,Files,Namespaces',
+                         file: 'build/logs/phploc.csv',
+                         inclusionFlag: 'INCLUDE_BY_STRING',
+                         url: ''
+                     ]],
+                     group: 'phploc',
                      numBuilds: '100',
                      style: 'line',
-                     title: 'Classes'
+                     title: 'B - Structures Containers',
+                     yaxis: 'Count'
 
-                plot csvFileName: 'methods.csv',
-                     csvSeries: [[file: 'build/logs/methods.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
-                     group: 'PHP Metrics',
+                plot csvFileName: 'plot-classes.csv',
+                     csvSeries: [[
+                         displayTableFlag: false,
+                         exclusionValues: 'Classes,Abstract Classes,Concrete Classes',
+                         file: 'build/logs/phploc.csv',
+                         inclusionFlag: 'INCLUDE_BY_STRING',
+                         url: ''
+                     ]],
+                     group: 'phploc',
                      numBuilds: '100',
                      style: 'line',
-                     title: 'Methods'
+                     title: 'E - Types of Classes',
+                     yaxis: 'Count'
 
-                plot csvFileName: 'cyclomatic_complexity.csv',
-                     csvSeries: [[file: 'build/logs/cyclomatic_complexity.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
-                     group: 'PHP Metrics',
+                plot csvFileName: 'plot-methods.csv',
+                     csvSeries: [[
+                         displayTableFlag: false,
+                         exclusionValues: 'Methods,Non-Static Methods,Static Methods,Public Methods,Non-Public Methods',
+                         file: 'build/logs/phploc.csv',
+                         inclusionFlag: 'INCLUDE_BY_STRING',
+                         url: ''
+                     ]],
+                     group: 'phploc',
                      numBuilds: '100',
                      style: 'line',
-                     title: 'Cyclomatic Complexity'
+                     title: 'F - Types of Methods',
+                     yaxis: 'Count'
+
+                plot csvFileName: 'plot-complexity.csv',
+                     csvSeries: [[
+                         displayTableFlag: false,
+                         exclusionValues: 'Cyclomatic Complexity / Lines of Code,Cyclomatic Complexity / Number of Methods',
+                         file: 'build/logs/phploc.csv',
+                         inclusionFlag: 'INCLUDE_BY_STRING',
+                         url: ''
+                     ]],
+                     group: 'phploc',
+                     numBuilds: '100',
+                     style: 'line',
+                     title: 'D - Relative Cyclomatic Complexity',
+                     yaxis: 'Cyclomatic Complexity by Structure'
             }
         }
 
@@ -123,17 +160,53 @@ pipeline {
             }
         }
 
+        stage('Package Artifact') {
+            steps {
+                sh 'zip -qr php-todo-${BUILD_NUMBER}.zip ${WORKSPACE}/*'
+                archiveArtifacts artifacts: 'php-todo-*.zip', fingerprint: true
+            }
+        }
+
         stage('Deploy to Dev Environment') {
+            agent { label 'agent-1' }
             steps {
                 build job: 'ansible-config-mgt/main', 
                       parameters: [
-                          [$class: 'StringParameterValue', name: 'inventory', value: 'dev'],
-                          [$class: 'StringParameterValue', name: 'playbook', value: 'playbooks/deploy-todo.yml']
+                          [$class: 'StringParameterValue', name: 'inventory', value: 'dev']
                       ], 
                       propagate: false, 
                       wait: true
             }
         }
 
+        stage('Deploy to Pentest Environment') {
+            agent { label 'agent-2' }
+            steps {
+                build job: 'ansible-config-mgt/main', 
+                      parameters: [
+                          [$class: 'StringParameterValue', name: 'inventory', value: 'pentest']
+                      ], 
+                      propagate: false, 
+                      wait: true
+            }
+        }
+
+        stage('Deploy to Production Environment') {
+            agent any
+            when {
+                branch 'main'
+            }
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    input message: 'Deploy to Production?', ok: 'Deploy'
+                }
+                build job: 'ansible-config-mgt/main', 
+                      parameters: [
+                          [$class: 'StringParameterValue', name: 'inventory', value: 'ci']
+                      ], 
+                      propagate: false, 
+                      wait: true
+            }
+        }
     }
 }
