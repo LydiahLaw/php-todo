@@ -122,5 +122,18 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Dev Environment') {
+            steps {
+                build job: 'ansible-config-mgt/main', 
+                      parameters: [
+                          [$class: 'StringParameterValue', name: 'inventory', value: 'dev'],
+                          [$class: 'StringParameterValue', name: 'playbook', value: 'playbooks/deploy-todo.yml']
+                      ], 
+                      propagate: false, 
+                      wait: true
+            }
+        }
+
     }
 }
