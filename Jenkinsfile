@@ -20,7 +20,7 @@ pipeline {
                 sh '''
                 cp .env.sample .env
                 php artisan key:generate
-                
+
                 sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
                 sed -i 's/DB_DATABASE=.*/DB_DATABASE=database\\/database.sqlite/' .env
                 sed -i 's/DB_HOST=.*/DB_HOST=/' .env
@@ -64,88 +64,49 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 sh '''
-                # Ensure logs directory exists
                 mkdir -p build/logs
-                # Generate PHPLoc CSV
-                ./vendor/bin/phploc app/ --log-csv build/logs/phploc.csv
+
+                ./vendor/bin/phploc app/ --log-csv build/logs/phploc_full.csv
+
+                awk -F, '/^Directories,Files,Namespaces,Classes,Abstract Classes,Concrete Classes,Methods,Cyclomatic Complexity/{next} {print $2}' build/logs/phploc_full.csv > build/logs/lines_of_code.csv
+                awk -F, '/^Classes,Abstract Classes,Concrete Classes/{next} {print $2}' build/logs/phploc_full.csv > build/logs/classes.csv
+                awk -F, '/^Methods,Non-Static Methods,Static Methods,Public Methods,Non-Public Methods/{next} {print $2}' build/logs/phploc_full.csv > build/logs/methods.csv
+                awk -F, '/^Cyclomatic Complexity/{next} {print $2}' build/logs/phploc_full.csv > build/logs/cyclomatic_complexity.csv
                 '''
             }
         }
 
         stage('Plot Code Metrics') {
             steps {
-                // Archive the CSV for debugging
-                archiveArtifacts artifacts: 'build/logs/phploc.csv', fingerprint: true
-                
-                plot csvFileName: 'plot-loc.csv',
-                     csvSeries: [[
-                         displayTableFlag: false,
-                         exclusionValues: 'Lines of Code (LOC),Comment Lines of Code (CLOC),Non-Comment Lines of Code (NCLOC),Logical Lines of Code (LLOC)',
-                         file: 'build/logs/phploc.csv',
-                         inclusionFlag: 'INCLUDE_BY_STRING',
-                         url: ''
-                     ]],
-                     group: 'phploc',
-                     numBuilds: '100',
-                     style: 'line',
-                     title: 'A - Lines of code',
-                     yaxis: 'Lines of Code'
+                archiveArtifacts artifacts: 'build/logs/*.csv', fingerprint: true
 
-                plot csvFileName: 'plot-structures.csv',
-                     csvSeries: [[
-                         displayTableFlag: false,
-                         exclusionValues: 'Directories,Files,Namespaces',
-                         file: 'build/logs/phploc.csv',
-                         inclusionFlag: 'INCLUDE_BY_STRING',
-                         url: ''
-                     ]],
-                     group: 'phploc',
+                plot csvFileName: 'lines_of_code.csv',
+                     csvSeries: [[file: 'build/logs/lines_of_code.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
+                     group: 'PHP Metrics',
                      numBuilds: '100',
                      style: 'line',
-                     title: 'B - Structures Containers',
-                     yaxis: 'Count'
+                     title: 'Lines of Code'
 
-                plot csvFileName: 'plot-classes.csv',
-                     csvSeries: [[
-                         displayTableFlag: false,
-                         exclusionValues: 'Classes,Abstract Classes,Concrete Classes',
-                         file: 'build/logs/phploc.csv',
-                         inclusionFlag: 'INCLUDE_BY_STRING',
-                         url: ''
-                     ]],
-                     group: 'phploc',
+                plot csvFileName: 'classes.csv',
+                     csvSeries: [[file: 'build/logs/classes.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
+                     group: 'PHP Metrics',
                      numBuilds: '100',
                      style: 'line',
-                     title: 'E - Types of Classes',
-                     yaxis: 'Count'
+                     title: 'Classes'
 
-                plot csvFileName: 'plot-methods.csv',
-                     csvSeries: [[
-                         displayTableFlag: false,
-                         exclusionValues: 'Methods,Non-Static Methods,Static Methods,Public Methods,Non-Public Methods',
-                         file: 'build/logs/phploc.csv',
-                         inclusionFlag: 'INCLUDE_BY_STRING',
-                         url: ''
-                     ]],
-                     group: 'phploc',
+                plot csvFileName: 'methods.csv',
+                     csvSeries: [[file: 'build/logs/methods.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
+                     group: 'PHP Metrics',
                      numBuilds: '100',
                      style: 'line',
-                     title: 'F - Types of Methods',
-                     yaxis: 'Count'
+                     title: 'Methods'
 
-                plot csvFileName: 'plot-complexity.csv',
-                     csvSeries: [[
-                         displayTableFlag: false,
-                         exclusionValues: 'Cyclomatic Complexity / Lines of Code,Cyclomatic Complexity / Number of Methods',
-                         file: 'build/logs/phploc.csv',
-                         inclusionFlag: 'INCLUDE_BY_STRING',
-                         url: ''
-                     ]],
-                     group: 'phploc',
+                plot csvFileName: 'cyclomatic_complexity.csv',
+                     csvSeries: [[file: 'build/logs/cyclomatic_complexity.csv', inclusionFlag: 'INCLUDE_BY_POSITION', displayTableFlag: false]],
+                     group: 'PHP Metrics',
                      numBuilds: '100',
                      style: 'line',
-                     title: 'D - Relative Cyclomatic Complexity',
-                     yaxis: 'Cyclomatic Complexity by Structure'
+                     title: 'Cyclomatic Complexity'
             }
         }
 
@@ -160,21 +121,15 @@ pipeline {
             }
         }
 
-        stage('Package Artifact') {
-            steps {
-                sh 'zip -qr php-todo-${BUILD_NUMBER}.zip ${WORKSPACE}/*'
-                archiveArtifacts artifacts: 'php-todo-*.zip', fingerprint: true
-            }
-        }
-
         stage('Deploy to Dev Environment') {
             agent { label 'agent-1' }
             steps {
-                build job: 'ansible-config-mgt/main', 
+                build job: 'ansible-config-mgt/main',
                       parameters: [
-                          [$class: 'StringParameterValue', name: 'inventory', value: 'dev']
-                      ], 
-                      propagate: false, 
+                          [$class: 'StringParameterValue', name: 'inventory', value: 'dev'],
+                          [$class: 'StringParameterValue', name: 'playbook', value: 'playbooks/deploy-todo.yml']
+                      ],
+                      propagate: false,
                       wait: true
             }
         }
@@ -182,17 +137,17 @@ pipeline {
         stage('Deploy to Pentest Environment') {
             agent { label 'agent-2' }
             steps {
-                build job: 'ansible-config-mgt/main', 
+                build job: 'ansible-config-mgt/main',
                       parameters: [
-                          [$class: 'StringParameterValue', name: 'inventory', value: 'pentest']
-                      ], 
-                      propagate: false, 
+                          [$class: 'StringParameterValue', name: 'inventory', value: 'pentest'],
+                          [$class: 'StringParameterValue', name: 'playbook', value: 'playbooks/deploy-todo.yml']
+                      ],
+                      propagate: false,
                       wait: true
             }
         }
 
         stage('Deploy to Production Environment') {
-            agent any
             when {
                 branch 'main'
             }
@@ -200,11 +155,12 @@ pipeline {
                 timeout(time: 10, unit: 'MINUTES') {
                     input message: 'Deploy to Production?', ok: 'Deploy'
                 }
-                build job: 'ansible-config-mgt/main', 
+                build job: 'ansible-config-mgt/main',
                       parameters: [
-                          [$class: 'StringParameterValue', name: 'inventory', value: 'ci']
-                      ], 
-                      propagate: false, 
+                          [$class: 'StringParameterValue', name: 'inventory', value: 'ci'],
+                          [$class: 'StringParameterValue', name: 'playbook', value: 'playbooks/deploy-todo.yml']
+                      ],
+                      propagate: false,
                       wait: true
             }
         }
